@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import api from '../../services/api';
 import { Card, Col, Container, Form, Image, Row, Spinner } from 'react-bootstrap'
 import { FcLike, FcDislike } from 'react-icons/fc';
+import { Link, useHistory } from 'react-router-dom';
 
 interface AnimeData {
   id: string;
@@ -23,17 +24,17 @@ function Home() {
   const [selectAnimeOrManga, setSelectAnimeOrManga] = useState('anime');
   const [info, setInfo] = useState<Data>();
   const [loading, setLoading] = useState(false);
-  
+
 
 
   useEffect(() => {
-    if (text){
+    if (text) {
       api.get(`${selectAnimeOrManga}?filter[text]=${text}&page[limit]=12`).then((response) => setInfo(response.data));
     }
     setLoading(true);
   }, [text, selectAnimeOrManga])
 
-    
+
   const handleChange = (event: ChangeEvent<{ value: string }>) => {
     setText(event?.currentTarget?.value);
   }
@@ -47,7 +48,7 @@ function Home() {
         <Form.Control value={text}
           onChange={handleChange}
           size="lg"
-          style={{width:'16rem'}}
+          style={{ width: '16rem' }}
           type="text"
           placeholder={`Digite o nome do ${selectAnimeOrManga}`} />
         <select onChange={e => setSelectAnimeOrManga(e.target.value)}
@@ -61,32 +62,35 @@ function Home() {
 
       {loading ? (
         <Row className="text-center">
-        {info?.data.map((data) => (
-          <Col md={3} sm={6} key={data.id} className="pb-3">
-            <Card text="light" bg="dark">
-              <Card.Body>
-                <Card.Title style={{ contain: 'size' }}>{data.attributes.canonicalTitle} </Card.Title>
-              </Card.Body>
-              <Card.Body>
-                <Image src={data.attributes.posterImage.small}
-                  alt={data.attributes.canonicalTitle}
-                  fluid
-                />
-              </Card.Body>
-              <Card.Footer>
-                <FcLike size={35} cursor="pointer" />
-              </Card.Footer>
-            </Card>
-          </Col>
-        ))}
+          {info?.data.map((data) => (
+            <Col md={3} sm={6} key={data.id} className="pb-3">
+              <Card text="light" bg="dark">
+                <Link style={{ cursor: 'pointer', textDecoration: 'none' }}  
+                to={{ pathname: `/detail/${selectAnimeOrManga}/${data.id}`}} >
+                  <Card.Body >
+                    <Card.Title  className="text-light" style={{ contain: 'size'}}>{data.attributes.canonicalTitle} </Card.Title>
+                  </Card.Body>
+                  <Card.Body>
+                    <Image src={data.attributes.posterImage.small}
+                      alt={data.attributes.canonicalTitle}
+                      fluid
+                    />
+                  </Card.Body>
+                </Link>
+                <Card.Footer>
+                  <FcLike size={35} cursor="pointer" />
+                </Card.Footer>
+              </Card>
+            </Col>
+          ))}
 
-      </Row>
-      ): (
+        </Row>
+      ) : (
         <div className="d-flex justify-content-center pt-5">
           <Spinner variant="light" animation="border" style={{ width: '5rem', height: '5rem' }} />
         </div>
-      ) }
-      
+      )}
+
     </Container>
   );
 }
