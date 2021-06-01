@@ -124,10 +124,10 @@ function Detail() {
         </>
       }
 
-      <div className="d-flex justify-content-center pt-3" >
-        {/* condicao favorito */}
+      {/* <div className="d-flex justify-content-center pt-3" >
+        condicao favorito
         <FcDislike size={50} cursor="pointer" />
-      </div>
+      </div> */}
 
     </Container>
 
